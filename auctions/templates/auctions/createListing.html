@@ -1,0 +1,23 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Create Listing</h2>
+
+    <form action="" method="post">
+        {%csrf_token%}
+        <label for="productName">Name your listing</label>
+        <input type="text" class="form-control textFieldWidth" id="productName"maxlength="64" name="listingName" placeholder="Enter Name">
+        <small class="form-text text-muted">Make sure your product's name is descriptive.</small>
+
+        <label for="productPrice">Enter the starting bid</label>
+        <input type="number" class="form-control" id="productPrice" name="listingPrice" placeholder="xxx">
+        <small class="form-text text-muted">Don't set your starting bid too high.</small>
+
+        <label for="productDescription">Enter the description for your product</label>
+        <textarea name="listingDescription" placeholder="Enter description" class="form-control" cols="30" rows="10"></textarea>
+        <small class="form-text text-muted">Description should be concise.</small>
+
+        <input class="btn btn-primary" type="submit" value="Add Listing">
+
+    </form>
+{% endblock %}

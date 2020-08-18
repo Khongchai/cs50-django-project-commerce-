@@ -1,3 +1,14 @@
 body {
     padding: 10px;
+    background-color: gainsboro;
+    color: brown;
+}
+
+
+.textFieldWidth{
+    width: 35% !important;
+}
+
+small{
+    margin-bottom: 30px;
 }

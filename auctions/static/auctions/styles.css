@@ -9,6 +9,28 @@ body {
     width: 35% !important;
 }
 
+.ListingDescriptions
+{
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.listingImages
+{
+    float: left;
+    width: 400px;
+    margin: 20px;
+    border-radius: 6%;
+}
+ul
+{
+    position: relative;
+}
 small{
+    margin-bottom: 30px;
+}
+
+select
+{
     margin-bottom: 30px;
 }

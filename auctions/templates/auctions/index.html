@@ -3,5 +3,31 @@
 {% block body %}
     <h2>Active Listings</h2>
 
-    TODO
+    {% for listing in listings %}
+    <br>
+    <div>
+        <img src="{{ listing.imgURL }}" class="listingImages">
+        <h3>Categories: </h3>
+        <br>
+        <ul>
+            {% for category in listing.categories.all %}
+                <li style="margin-left: 20px">{{ category }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div>
+        {{ listing.listingItemName }}<br>
+        <small>{{ listing.listingDate }}</small>
+    </div>
+    <div class="ListingDescriptions">
+        <h3>Description</h3>
+        <br>
+        <p>
+            {{ listing.listingDescription }}
+        </p>
+    </div>
+    <br>
+    <hr>
+        
+    {% endfor %}
 {% endblock %}

@@ -4,11 +4,13 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User
+from .models import *
 
 
 def index(request):
-    return render(request, "auctions/index.html")
+    return render(request, "auctions/index.html", {
+        "listings": Listing.objects.all()
+    })
 
 
 def login_view(request):
@@ -63,4 +65,31 @@ def register(request):
         return render(request, "auctions/register.html")
 
 def createListing(request):
-    return render(request, "auctions/createListing.html")
+    if request.user.is_authenticated:
+        if request.method == "POST":
+            listingName = request.POST["listingName"]
+            listingPrice = request.POST["listingPrice"]
+            listingDescription = request.POST["listingDescription"]
+            listingCategories = request.POST.getlist("category")
+            imgURL = request.POST["imgURL"]
+            currentUser = User.objects.get(pk=request.user.id)
+
+            newListing = Listing.objects.create(owner=currentUser, listingItemName=listingName, price=listingPrice, 
+                            listingDescription=listingDescription, imgURL=imgURL)
+
+            #filter list for categories
+            for cat in listingCategories:
+                newListing.categories.add(Category.objects.get(categoryName=cat))
+            
+            #newListing.categories.add(Category.objects.filter())
+
+            newListing.save()
+
+            #change to lead to "my listing page" instead
+            return HttpResponseRedirect(reverse("index")) 
+        else:
+            return render(request, "auctions/createListing.html", {
+                "categories": Category.objects.all()
+            })
+    else:
+        return HttpResponseRedirect(reverse("index"))

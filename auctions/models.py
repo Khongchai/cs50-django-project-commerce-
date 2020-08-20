@@ -14,7 +14,7 @@ class Category(models.Model):
 class Listing(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listedProducts")
     listingItemName = models.CharField(max_length=64)
-    price = models.IntegerField()
+    listingPrice = models.IntegerField()
     listingDate = models.DateTimeField(auto_now_add=True, blank=True)
     listingDescription = models.TextField(default="Enter description")
     #null = value is null in the database
@@ -23,7 +23,7 @@ class Listing(models.Model):
     categories = models.ManyToManyField(Category, blank=True, related_name="itemsInCategory")
 
     def __str__(self):
-        return f"ID: {self.id}\n Product: {self.listingItemName}\n Posted by: {self.owner} \n Price: {self.price} \n Listing date: {self.listingDate} \n imgURL: {self.imgURL}\n Categories: {self.categories}"
+        return f"ID: {self.id}\n Product: {self.listingItemName}\n Posted by: {self.owner} \n Price: {self.listingPrice} \n Listing date: {self.listingDate} \n imgURL: {self.imgURL}\n Categories: {self.categories}"
 
 class Bid(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="biddedProducts")

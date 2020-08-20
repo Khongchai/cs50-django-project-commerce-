@@ -74,7 +74,7 @@ def createListing(request):
             imgURL = request.POST["imgURL"]
             currentUser = User.objects.get(pk=request.user.id)
 
-            newListing = Listing.objects.create(owner=currentUser, listingItemName=listingName, price=listingPrice, 
+            newListing = Listing.objects.create(owner=currentUser, listingItemName=listingName, listingPrice=listingPrice, 
                             listingDescription=listingDescription, imgURL=imgURL)
 
             #filter list for categories
@@ -93,3 +93,9 @@ def createListing(request):
             })
     else:
         return HttpResponseRedirect(reverse("index"))
+
+def watchlist(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("index"))
+    return render(request, "auctions/watchlist.html")
+        

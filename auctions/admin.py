@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import *
 
 class ListingAdmin(admin.ModelAdmin):
-    list_display = ("id", "listingItemName", "price", "listingDate", "imgURL")
+    list_display = ("id", "listingItemName", "listingPrice", "listingDate", "imgURL")
     filter_horizontal = ("categories",)
 # Register your models here.
 

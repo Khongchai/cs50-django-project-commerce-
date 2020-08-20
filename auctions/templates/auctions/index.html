@@ -11,21 +11,24 @@
         <br>
         <ul>
             {% for category in listing.categories.all %}
-                <li style="margin-left: 20px">{{ category }}</li>
+                <li>{{ category }}</li>
             {% endfor %}
         </ul>
     </div>
-    <div>
+    <div class="listingDetails">
         {{ listing.listingItemName }}<br>
-        <small>{{ listing.listingDate }}</small>
-    </div>
-    <div class="ListingDescriptions">
+        <small>Posted: {{ listing.listingDate }}</small>
+        <small>Price: ${{ listing.listingPrice }}</small>
+        <br>
+        <div class="ListingDescriptions">
         <h3>Description</h3>
         <br>
         <p>
             {{ listing.listingDescription }}
         </p>
     </div>
+    </div>
+    
     <br>
     <hr>
         

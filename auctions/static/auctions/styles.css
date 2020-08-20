@@ -8,6 +8,11 @@ body {
 .textFieldWidth{
     width: 35% !important;
 }
+.listingDetails
+{
+    clear: left;
+    margin: 20px;
+}
 
 .ListingDescriptions
 {

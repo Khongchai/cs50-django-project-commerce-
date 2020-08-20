@@ -67,6 +67,7 @@ def register(request):
 def createListing(request):
     if request.user.is_authenticated:
         if request.method == "POST":
+            #get all details including current user
             listingName = request.POST["listingName"]
             listingPrice = request.POST["listingPrice"]
             listingDescription = request.POST["listingDescription"]
@@ -74,6 +75,7 @@ def createListing(request):
             imgURL = request.POST["imgURL"]
             currentUser = User.objects.get(pk=request.user.id)
 
+            #create new listing
             newListing = Listing.objects.create(owner=currentUser, listingItemName=listingName, listingPrice=listingPrice, 
                             listingDescription=listingDescription, imgURL=imgURL)
 
@@ -99,3 +101,10 @@ def watchlist(request):
         return HttpResponseRedirect(reverse("index"))
     return render(request, "auctions/watchlist.html")
         
+def productDetails(request, listingID):
+    clickedListing = Listing.objects.get(pk=listingID)
+    #TODO make sure that when the user click on any photo, appropriate product details are passed.
+
+    #this httpresponse is a place holder
+    return HttpResponse(listingID)
+

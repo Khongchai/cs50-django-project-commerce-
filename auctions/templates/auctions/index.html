@@ -6,7 +6,9 @@
     {% for listing in listings %}
     <br>
     <div>
-        <img src="{{ listing.imgURL }}" class="listingImages">
+        <a href="{% url 'productDetails' listing.id %}">
+            <img src="{{ listing.imgURL }}" class="listingImages">
+        </a>
         <h3>Categories: </h3>
         <br>
         <ul>

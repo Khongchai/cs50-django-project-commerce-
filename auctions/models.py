@@ -3,7 +3,10 @@ from django.db import models
 
 
 class User(AbstractUser):
-    pass
+    watchlist = models.ManyToManyField("Listing", blank=True, related_name="usersWatchlist")
+    bio = models.TextField(max_length=500, blank=True)
+
+
 
 class Category(models.Model):
     categoryName = models.TextField(default="Enter Name")

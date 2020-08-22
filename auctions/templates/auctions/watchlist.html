@@ -1,5 +1,47 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
+    <h2>
+        Current Watchlist
+    </h2>
+    {% for listing in request.user.watchlist.all %}
+
+    <br>
+    <div>
+        <img src="{{ listing.imgURL }}" class="listingImages">
+        <h3>Categories: </h3>
+        <br>
+        <ul>
+            {% for category in listing.categories.all %}
+                <li>{{ category }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="listingDetails">
+        {{ listing.listingItemName }}<br>
+        <small>Posted by {{ listing.owner }} on {{ listing.listingDate }}</small>
+        <br>
+        <small>Price: ${{ listing.listingPrice }}</small>
+        <br>
+        <div class="ListingDescriptions">
+        <h3>Description</h3>
+        <br>
+        <p>
+            {{ listing.listingDescription }}
+        </p>
+        {% if user.is_authenticated %}
+            <form action="{% url 'watchlistRemove' listing.id%}" method="POST">
+                {% csrf_token %}
+                <input type="submit" value="Remove" name="add" class="btn btn-primary">
+            </form>
+
+        {% endif %}
+    </div>
+    </div>
+    
+    <br>
+    <hr>
+        
+    {% endfor %}
 
 {% endblock %}

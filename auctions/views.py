@@ -82,8 +82,6 @@ def createListing(request):
             #filter list for categories
             for cat in listingCategories:
                 newListing.categories.add(Category.objects.get(categoryName=cat))
-            
-            #newListing.categories.add(Category.objects.filter())
 
             newListing.save()
 
@@ -96,15 +94,38 @@ def createListing(request):
     else:
         return HttpResponseRedirect(reverse("index"))
 
-def watchlist(request):
-    if not request.user.is_authenticated:
+
+def watchlistAdd(request, watchlistItemID):
+    if request.method == "POST":
+        if not request.user.is_authenticated:
+            return HttpResponseRedirect(reverse("index"))
+        currentUser = User.objects.get(pk=request.user.id)
+        currentUser.watchlist.add(Listing.objects.get(pk=watchlistItemID))
+
+        return HttpResponseRedirect(reverse("watchlist"))
+    else:
         return HttpResponseRedirect(reverse("index"))
+
+def watchlistRemove(request, watchlistItemID):
+    if request.method == "POST":
+        currentUser = User.objects.get(pk=request.user.id)
+        currentUser.watchlist.remove(Listing.objects.get(pk=watchlistItemID))
+        return render(request, "auctions/watchlist.html")
+    else:
+        return HttpResponseRedirect(reverse("index"))
+
+def watchlist(request):
+    #for showing watchlist
     return render(request, "auctions/watchlist.html")
-        
-def productDetails(request, listingID):
-    clickedListing = Listing.objects.get(pk=listingID)
-    #TODO make sure that when the user click on any photo, appropriate product details are passed.
 
-    #this httpresponse is a place holder
-    return HttpResponse(listingID)
+def categories(request):
+    return render(request, "auctions/categories.html",
+    {
+        "categories": Category.objects.all()
+    })
 
+def categoryItems(request, categoryName):
+    pass
+#TODO return with a list of all stuff in the category
+#hint: related names (follow the arrows pointing to the category)
+    

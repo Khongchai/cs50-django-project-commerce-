@@ -6,9 +6,7 @@
     {% for listing in listings %}
     <br>
     <div>
-        <a href="{% url 'productDetails' listing.id %}">
-            <img src="{{ listing.imgURL }}" class="listingImages">
-        </a>
+        <img src="{{ listing.imgURL }}" class="listingImages">
         <h3>Categories: </h3>
         <br>
         <ul>
@@ -19,7 +17,8 @@
     </div>
     <div class="listingDetails">
         {{ listing.listingItemName }}<br>
-        <small>Posted: {{ listing.listingDate }}</small>
+        <small>Posted by {{ listing.owner }} on {{ listing.listingDate }}</small>
+        <br>
         <small>Price: ${{ listing.listingPrice }}</small>
         <br>
         <div class="ListingDescriptions">
@@ -28,11 +27,18 @@
         <p>
             {{ listing.listingDescription }}
         </p>
+        {% if user.is_authenticated %}
+            <form action="{% url 'watchlistAdd' listing.id%}" method="POST">
+                {% csrf_token %}
+                <input type="submit" value="Add to Watchlist" name="add" class="btn btn-primary">
+            </form>
+
+        {% endif %}
     </div>
     </div>
     
     <br>
     <hr>
-        
+
     {% endfor %}
 {% endblock %}

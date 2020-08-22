@@ -6,18 +6,18 @@
     <form action="{% url 'createListing' %}" method="post">
         {%csrf_token%}
         <label for="productName">Name your listing</label>
-        <input type="text" class="form-control textFieldWidth" id="productName"maxlength="64" name="listingName" placeholder="Enter Name">
+        <input type="text" class="form-control textFieldWidth" id="productName"maxlength="64" name="listingName" placeholder="Enter Name" required>
         <small class="form-text text-muted">Make sure your product's name is descriptive.</small>
 
         <label for="productPrice">Enter the starting bid</label>
-        <input type="number" class="form-control" id="productPrice" name="listingPrice" placeholder="xxx">
+        <input type="number" class="form-control" id="productPrice" name="listingPrice" placeholder="xxx" required>
         <small class="form-text text-muted">Don't set your starting bid too high.</small>
 
         <label for="productDescription">Enter the description for your product</label>
-        <textarea name="listingDescription" placeholder="Enter description" class="form-control" cols="30" rows="10"></textarea>
+        <textarea name="listingDescription" placeholder="Enter description" class="form-control" cols="30" rows="10" required></textarea>
         <small class="form-text text-muted">Description should be concise.</small>
 
-        <input type="url" name="imgURL" placeholder="Enter URL" class="form-control">
+        <input type="url" name="imgURL" placeholder="Enter URL" class="form-control" required>
         <small>Enter your the URL for your product's image</small>
 
         <select name="category" id="" class="form-control" multiple>

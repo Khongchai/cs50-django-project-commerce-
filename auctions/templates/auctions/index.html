@@ -3,42 +3,5 @@
 {% block body %}
     <h2>Active Listings</h2>
 
-    {% for listing in listings %}
-    <br>
-    <div>
-        <img src="{{ listing.imgURL }}" class="listingImages">
-        <h3>Categories: </h3>
-        <br>
-        <ul>
-            {% for category in listing.categories.all %}
-                <li>{{ category }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-    <div class="listingDetails">
-        {{ listing.listingItemName }}<br>
-        <small>Posted by {{ listing.owner }} on {{ listing.listingDate }}</small>
-        <br>
-        <small>Price: ${{ listing.listingPrice }}</small>
-        <br>
-        <div class="ListingDescriptions">
-        <h3>Description</h3>
-        <br>
-        <p>
-            {{ listing.listingDescription }}
-        </p>
-        {% if user.is_authenticated %}
-            <form action="{% url 'watchlistAdd' listing.id%}" method="POST">
-                {% csrf_token %}
-                <input type="submit" value="Add to Watchlist" name="add" class="btn btn-primary">
-            </form>
-
-        {% endif %}
-    </div>
-    </div>
-    
-    <br>
-    <hr>
-
-    {% endfor %}
+    {% include "auctions/listingTemplate.html" with emptyMessage="There are currently no auctioned items" %}
 {% endblock %}

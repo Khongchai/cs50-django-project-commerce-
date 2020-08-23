@@ -20,12 +20,22 @@ body {
     margin-bottom: 30px;
 }
 
+.MediumMargin
+{
+    margin: 20px;
+}
+
 .listingImages
 {
     float: left;
     width: 400px;
     margin: 20px;
     border-radius: 6%;
+}
+.listingImagesBig
+{
+    width: 700px;
+    position: relative;
 }
 ul
 {

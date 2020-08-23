@@ -1,0 +1,54 @@
+{% for listing in objectForLoop %}
+<br>
+<div>
+    <a href="{% url 'viewlistinginfo' listing.id %}">
+        <img style="position: relative; z-index: 2;"src="{{ listing.imgURL }}" class="listingImages">
+    </a>
+    
+    <span style="position: relative; z-index: 1">
+        <h3>Categories: </h3>
+        <br>
+        <ul>
+            {% for category in listing.categories.all %}
+                <li>{{ category }}</li>
+            {% endfor %}
+        </ul>
+    </span>
+    
+</div>
+<div class="listingDetails">
+    {{ listing.listingItemName }}<br>
+    <small>Posted by {{ listing.owner }} on {{ listing.listingDate }}</small>
+    <br>
+    <small>Current Bid: ${{ listing.currentBid }}</small>
+    <br>
+    <div class="ListingDescriptions">
+        <h3>Description</h3>
+        <br>
+        <p>
+            {{ listing.listingDescription }}
+        </p>
+        {% if user.is_authenticated %}
+
+            {% if not listing in request.user.watchlist.all %}
+                <form action="{% url 'watchlistAdd' listing.id%}" method="POST" >
+                    {% csrf_token %}
+                    <input type="submit" value="Add to Watchlist" name="add" class="btn btn-primary">
+                </form>
+            {% else %}
+                <form action="{% url 'watchlistRemove' listing.id%}" method="POST" >
+                    {% csrf_token %}
+                    <input type="submit" value="Remove" name="add" class="btn btn-primary">
+                </form>
+            {% endif %}
+
+        {% endif %}
+    </div>
+</div>
+
+<br>
+<hr>
+{% empty %}
+    {{ emptyMessage }}
+{% endfor %}
+

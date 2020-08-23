@@ -1,0 +1,7 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Items in {{ categoryName }}</h2>
+
+    {% include "auctions/listingTemplate.html" with emptyMessage="This category has no listings" %}
+{% endblock %}

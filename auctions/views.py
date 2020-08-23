@@ -9,7 +9,7 @@ from .models import *
 
 def index(request):
     return render(request, "auctions/index.html", {
-        "listings": Listing.objects.all()
+        "objectForLoop": Listing.objects.all()
     })
 
 
@@ -69,14 +69,14 @@ def createListing(request):
         if request.method == "POST":
             #get all details including current user
             listingName = request.POST["listingName"]
-            listingPrice = request.POST["listingPrice"]
+            currentBid = request.POST["currentBid"]
             listingDescription = request.POST["listingDescription"]
             listingCategories = request.POST.getlist("category")
             imgURL = request.POST["imgURL"]
             currentUser = User.objects.get(pk=request.user.id)
 
             #create new listing
-            newListing = Listing.objects.create(owner=currentUser, listingItemName=listingName, listingPrice=listingPrice, 
+            newListing = Listing.objects.create(owner=currentUser, listingItemName=listingName, currentBid=currentBid, 
                             listingDescription=listingDescription, imgURL=imgURL)
 
             #filter list for categories
@@ -99,7 +99,7 @@ def watchlistAdd(request, watchlistItemID):
     if request.method == "POST":
         if not request.user.is_authenticated:
             return HttpResponseRedirect(reverse("index"))
-        currentUser = User.objects.get(pk=request.user.id)
+        currentUser = User.objects.get(pk=request.user.id)     
         currentUser.watchlist.add(Listing.objects.get(pk=watchlistItemID))
 
         return HttpResponseRedirect(reverse("watchlist"))
@@ -110,13 +110,16 @@ def watchlistRemove(request, watchlistItemID):
     if request.method == "POST":
         currentUser = User.objects.get(pk=request.user.id)
         currentUser.watchlist.remove(Listing.objects.get(pk=watchlistItemID))
-        return render(request, "auctions/watchlist.html")
+        return HttpResponseRedirect(reverse("watchlist"))
     else:
         return HttpResponseRedirect(reverse("index"))
 
 def watchlist(request):
     #for showing watchlist
-    return render(request, "auctions/watchlist.html")
+    return render(request, "auctions/watchlist.html",
+    {
+        "objectForLoop": request.user.watchlist.all()
+    })
 
 def categories(request):
     return render(request, "auctions/categories.html",
@@ -125,7 +128,18 @@ def categories(request):
     })
 
 def categoryItems(request, categoryName):
+    selectedCategory = Category.objects.get(categoryName=categoryName)
+    itemsInCategory = selectedCategory.itemsInCategory.all()
+    return render(request, "auctions/categoryItem.html",
+    {
+        "objectForLoop": itemsInCategory,
+        "categoryName": categoryName
+    })
+
+def viewlistinginfo(request, listingID):
+    return render(request, "auctions/listingInfo.html", {
+        "listing": Listing.objects.get(pk=listingID)
+    })
+
+def updateCurrentBid(request):
     pass
-#TODO return with a list of all stuff in the category
-#hint: related names (follow the arrows pointing to the category)
-    

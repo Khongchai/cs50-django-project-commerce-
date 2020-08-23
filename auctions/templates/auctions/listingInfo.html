@@ -1,0 +1,32 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <div style="text-align: center">
+        <h2 class="MediumMargin">Listing: {{ listing.listingItemName }}</h2>
+        <img src="{{ listing.imgURL }}" class="listingImagesBig">
+
+        
+        <div style="width: 500px; position: relative; display: inline-block">
+            <h3 style="position: relative" class="MediumMargin">Details</h3>
+            <ul>
+                <li>Owner: {{ listing.owner }}</li>
+                <li>Current Bid: ${{ listing.currentBid }}</li>
+                <li>Date listed: {{ listing.listingDate }}</li>
+                <li>
+                    Category: 
+                        {% for category in listing.categories.all %}
+                            <a href="{% url 'categoryItems' category.categoryName %}">
+                                {{category}} 
+                            </a>
+                        {% endfor %}
+                </li>
+            </ul>
+
+            <form action="{% url 'updateCurrentBid' %}" method="POST">
+                <input type="number" class="form-control"min="1" placeholder="Enter your bid">
+                <input type="submit" class="btn btn-primary" >
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

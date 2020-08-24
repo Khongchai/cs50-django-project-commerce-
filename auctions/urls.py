@@ -13,6 +13,7 @@ urlpatterns = [
     path("watchlistRemove/<int:watchlistItemID>", views.watchlistRemove, name="watchlistRemove"),
     path("categories", views.categories, name="categories"),
     path("categories/<str:categoryName>", views.categoryItems, name="categoryItems"),
-    path("viewlistinginfo/<int:listingID>", views.viewlistingAndUpdateInfo, name="viewlistingAndUpdateInfo")
+    path("viewlistinginfo/<int:listingID>", views.viewlistingAndUpdateInfo, name="viewlistingAndUpdateInfo"),
+    path("closebid/<int:listingID>", views.closeBid, name="closeBid")
 
 ]

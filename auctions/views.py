@@ -141,14 +141,34 @@ def viewlistingAndUpdateInfo(request, listingID):
     if request.method == "POST":
         newBid = request.POST["newBid"]
         newBidder = User.objects.get(pk=request.user.id)
-        if listing.currentBid < newBid:
+        if listing.currentBid < int(newBid):
             listing.currentBid = newBid
             listing.currentHighestBidOwner = newBidder
             listing.save()
         else:
             #TODO pass error message that new bid should be higher than current
-            pass
+            return render(request, "auctions/listingInfo.html", {
+            "listing": listing,
+            "errorMessage": "New bid should be higher than the current bid"
+        })
         
     return render(request, "auctions/listingInfo.html", {
         "listing": listing
     })
+
+def closeBid(request, listingID):
+    listing = Listing.objects.get(pk=listingID)
+    if not request.user.is_authenticated:
+        return render(request, "auctions/index.html")
+
+    closingPrice = int(request.POST["closingPrice"])
+    if listing.currentBid < closingPrice:
+        return render(request, "auctions/listingInfo.html", {
+        "listing": listing,
+        "errorMessage": "New bid should be higher than the current bid"
+    })
+    else:
+        #after having checked that last bid is valid, begin the process of closing off this bid
+        pass
+        
+    

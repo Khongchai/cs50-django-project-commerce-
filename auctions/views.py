@@ -168,7 +168,12 @@ def closeBid(request, listingID):
         "errorMessage": "New bid should be higher than the current bid"
     })
     else:
+        listing.currentBid = closingPrice
+        listing.active = False
+        listing.save()
         #after having checked that last bid is valid, begin the process of closing off this bid
-        pass
+        return render(request, "auctions/listingInfo.html", {
+        "listing": listing
+    })
         
     

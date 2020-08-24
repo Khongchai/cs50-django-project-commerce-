@@ -1,56 +1,72 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <div style="text-align: center">
-        <h2 class="MediumMargin">Listing: {{ listing.listingItemName }}</h2>
-        <img src="{{ listing.imgURL }}" class="listingImagesBig">
-
-        
-        <div style="width: 500px; position: relative; display: inline-block">
-            <h3 style="position: relative" class="MediumMargin">Details</h3>
-            <ul>
-                <li>Owner: {{ listing.owner }}</li>
-                <li>Current Bid: ${{ listing.currentBid }}</li>
-                <li>Date listed: {{ listing.listingDate }}</li>
-                <li>
-                    Category: 
-                        {% for category in listing.categories.all %}
-                            <a href="{% url 'categoryItems' category.categoryName %}">
-                                {{category}} 
-                            </a>
-                        {% endfor %}
-                </li>
-            </ul>
-            {% if user.is_authenticated %}
-                <form action="{% url 'viewlistingAndUpdateInfo' listing.id %}" method="POST">
-                    {% csrf_token %}
-                    <label for="number">Current bid made by: {{ listing.currentHighestBidOwner }} at ${{listing.currentBid}}</label>
-                    <input type="number" name="newBid" class="form-control"min="1" placeholder="Enter your bid" id="primaryFormInput"required>
-                    {% if errorMessage %}
-                        <small>
-                            {{ errorMessage }}
-                        </small>
+    {% if listing.active %}
+        <div style="text-align: center">
+            <h2 class="MediumMargin">Listing: {{ listing.listingItemName }}</h2>
+            <img src="{{ listing.imgURL }}" class="listingImagesBig">
+            <div style="width: 500px; position: relative; display: inline-block">
+                <h3 style="position: relative" class="MediumMargin">Details</h3>
+                <ul>
+                    <li>Owner: {{ listing.owner }}</li>
+                    <li>Current Bid: ${{ listing.currentBid }}</li>
+                    <li>Date listed: {{ listing.listingDate }}</li>
+                    <li>
+                        Category: 
+                            {% for category in listing.categories.all %}
+                                <a href="{% url 'categoryItems' category.categoryName %}">
+                                    {{category}} 
+                                </a>
+                            {% endfor %}
+                    </li>
+                </ul>
+                {% if user.is_authenticated %}
+                    <form action="{% url 'viewlistingAndUpdateInfo' listing.id %}" method="POST">
+                        {% csrf_token %}
+                        <label for="number">Current bid made by: {{ listing.currentHighestBidOwner }} at ${{listing.currentBid}}</label>
+                        <input type="number" name="newBid" class="form-control 
+                            placeholder="Enter your bid" id="primaryFormInput"required min=1>
+                        {% if errorMessage %}
+                            <small>
+                                {{ errorMessage }}
+                            </small>
+                        {% endif %}
+                        <br>
+                        <div>
+                            <input type="submit" class="btn btn-primary">
+                            {% if request.user == listing.owner %}
+                                <button class="btn btn-primary" type="button"style="display: inline-block" onclick="closeBid()">Close Bid</button>
+                            {% endif %}
+                        </div>
+                    </form>
+                    {% if request.user == listing.owner %}
+                        <form action="{% url 'closeBid' listing.id %}" style="visibility: hidden;" id="closeBidForm" method="POST">
+                            {% csrf_token %}
+                            <input type="number" name="closingPrice" id="closeBidFormInput">
+                        </form>
                     {% endif %}
-                    <br>
-                    <div>
-                        <input type="submit" class="btn btn-primary">
-                        <button class="btn btn-primary" type="button"style="display: inline-block" onclick="closeBid()">Close Bid</button>
-                    </div>
-                </form>
-                <form action="{% url 'closeBid' listing.id %}" style="visibility: hidden;" id="closeBidForm" method="POST">
-                    {% csrf_token %}
-                    <input type="number" name="closingPrice" id="closeBidFormInput">
-                </form>
-            {% endif %}
+                {% endif %}
+            </div>
         </div>
-    </div>
+    {% else %}
+        {% include "auctions/closebid.html" with itemName=listing.listingItemName closingPrice=listing.currentBid %}
+    {% endif %}
+
     <script>
         function closeBid()
         {
             primaryForm = document.getElementById("primaryFormInput");
             closeBidFormInput = document.getElementById("closeBidFormInput");
 
-            closeBidFormInput.value = primaryForm.value;
+            if (!!primaryForm.value)
+            {
+                closeBidFormInput.value = primaryForm.value;
+            }
+            else
+            {
+                closeBidFormInput.value = "{{ listing.currentBid }}"
+            }
+            
             document.getElementById("closeBidForm").submit()
         }
     </script>

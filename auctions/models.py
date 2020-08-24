@@ -16,6 +16,7 @@ class Listing(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listedProducts")
     currentHighestBidOwner = models.ForeignKey(User, on_delete=models.SET_NULL, related_name="highestBidderOn", null=True)
     listingItemName = models.CharField(max_length=64)
+    active = models.BooleanField(default=True)
     currentBid = models.IntegerField(default=1, null=False, blank=False)
     listingDate = models.DateTimeField(auto_now_add=True, blank=True)
     listingDescription = models.TextField(default="Enter description")

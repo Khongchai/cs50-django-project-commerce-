@@ -136,10 +136,19 @@ def categoryItems(request, categoryName):
         "categoryName": categoryName
     })
 
-def viewlistinginfo(request, listingID):
+def viewlistingAndUpdateInfo(request, listingID):
+    listing = Listing.objects.get(pk=listingID)
+    if request.method == "POST":
+        newBid = request.POST["newBid"]
+        newBidder = User.objects.get(pk=request.user.id)
+        if listing.currentBid < newBid:
+            listing.currentBid = newBid
+            listing.currentHighestBidOwner = newBidder
+            listing.save()
+        else:
+            #TODO pass error message that new bid should be higher than current
+            pass
+        
     return render(request, "auctions/listingInfo.html", {
-        "listing": Listing.objects.get(pk=listingID)
+        "listing": listing
     })
-
-def updateCurrentBid(request):
-    pass

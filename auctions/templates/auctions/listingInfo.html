@@ -21,13 +21,15 @@
                         {% endfor %}
                 </li>
             </ul>
-
-            <form action="{% url 'updateCurrentBid' %}" method="POST">
-                <label for="number">Current bid made by: {{ listing.currentHighestBidOwner }} at ${{listing.currentBid}}</label>
-                <input type="number" class="form-control"min="1" placeholder="Enter your bid">
-                <br>
-                <input type="submit" class="btn btn-primary" >
-            </form>
+            {% if user.is_authenticated %}
+                <form action="{% url 'viewlistingAndUpdateInfo' listing.id %}" method="POST">
+                    {% csrf_token %}
+                    <label for="number">Current bid made by: {{ listing.currentHighestBidOwner }} at ${{listing.currentBid}}</label>
+                    <input type="number" name="newBid" class="form-control"min="1" placeholder="Enter your bid">
+                    <br>
+                    <input type="submit" class="btn btn-primary" >
+                </form>
+            {% endif %}
         </div>
     </div>
 

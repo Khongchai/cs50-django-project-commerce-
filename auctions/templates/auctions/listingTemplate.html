@@ -1,7 +1,7 @@
 {% for listing in objectForLoop %}
 <br>
 <div>
-    <a href="{% url 'viewlistinginfo' listing.id %}">
+    <a href="{% url 'viewlistingAndUpdateInfo' listing.id %}">
         <img style="position: relative; z-index: 2;"src="{{ listing.imgURL }}" class="listingImages">
     </a>
     
@@ -33,7 +33,7 @@
         {% if user.is_authenticated %}
 
             {% if not listing in request.user.watchlist.all %}
-                <form action="{% url 'watchlistAdd' listing.id%}" method="POST" >
+                <form action="{% url 'watchlistAdd' listing.id %}" method="POST" >
                     {% csrf_token %}
                     <input type="submit" value="Add to Watchlist" name="add" class="btn btn-primary">
                 </form>

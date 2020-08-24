@@ -23,7 +23,9 @@
             </ul>
 
             <form action="{% url 'updateCurrentBid' %}" method="POST">
+                <label for="number">Current bid made by: {{ listing.currentHighestBidOwner }} at ${{listing.currentBid}}</label>
                 <input type="number" class="form-control"min="1" placeholder="Enter your bid">
+                <br>
                 <input type="submit" class="btn btn-primary" >
             </form>
         </div>

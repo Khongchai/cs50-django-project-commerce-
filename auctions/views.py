@@ -75,9 +75,9 @@ def createListing(request):
             imgURL = request.POST["imgURL"]
             currentUser = User.objects.get(pk=request.user.id)
 
-            #create new listing
+            #the owner is the immediate highest bidder
             newListing = Listing.objects.create(owner=currentUser, listingItemName=listingName, currentBid=currentBid, 
-                            listingDescription=listingDescription, imgURL=imgURL)
+                            listingDescription=listingDescription, imgURL=imgURL, currentHighestBidOwner=currentUser)
 
             #filter list for categories
             for cat in listingCategories:

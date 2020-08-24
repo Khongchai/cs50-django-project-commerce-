@@ -10,7 +10,9 @@
         <br>
         <ul>
             {% for category in listing.categories.all %}
-                <li>{{ category }}</li>
+                <a href="{% url 'categoryItems' category.categoryName %}">
+                    <li>{{ category }}</li>
+                </a>
             {% endfor %}
         </ul>
     </span>

@@ -4,83 +4,68 @@
         Total Items: {{ objectForLoop|length }}
     </div>
 </div>
-{% for listing in objectForLoop %}
-<div>
-    <a href="{% url 'viewlistingAndUpdateInfo' listing.id %}">
-        <img style="position: relative; z-index: 2;"src="{{ listing.imgURL }}" class="listingImages">
-    </a>
-    
-    <span style="position: relative; z-index: 1">
-        <h3>Categories: </h3>
-        <br>
-        <ul>
-            {% for category in listing.categories.all %}
-                <a href="{% url 'categoryItems' category.categoryName %}">
-                    <li>{{ category }}</li>
-                </a>
-            {% endfor %}
-        </ul>
-    </span>
-    
-</div>
-<div class="listingDetails">
-    {{ listing.listingItemName }}<br>
-    <small>Posted by {{ listing.owner }} on {{ listing.listingDate }}</small>
-    <br>
-    <small>Current Bid: ${{ listing.currentBid }}</small>
-    <br>
-    <div class="ListingDescriptions">
-        <h3>Description</h3>
-        <br>
-        <p>
-            {{ listing.listingDescription }}
-        </p>
-        {% if user.is_authenticated %}
-            <form>
-                {% if not listing in request.user.watchlist.all %}
-                    <input type="button"class="btn btn-primary" value="Add to Watchlist"onclick="changeButtonAPI('{{ listing.id }}', this)"/>
-                {% else %}
-                    <input type="button"class="btn btn-primary" value="Remove from Watchlist"onclick="changeButtonAPI('{{ listing.id }}', this)"/>
+
+<div style="text-align: center">
+    <div style="width: 80%; margin: 0 auto">
+        {% for listing in objectForLoop %}
+        <div>
+            <a href="{% url 'viewlistingAndUpdateInfo' listing.id %}">
+                <img style="position: relative; z-index: 2;"src="{{ listing.imgURL }}" class="listingImages">
+            </a>
+            
+            <span style="position: relative; z-index: 1">
+                <h3>Categories: </h3>
+                <br>
+                <ul>
+                    {% for category in listing.categories.all %}
+                        <a href="{% url 'categoryItems' category.categoryName %}">
+                            <li>{{ category }}</li>
+                        </a>
+                    {% endfor %}
+                </ul>
+            </span>
+            
+        </div>
+        <div class="listingDetails">
+            {{ listing.listingItemName }}<br>
+            <small>Posted by {{ listing.owner }} on {{ listing.listingDate }}</small>
+            <br>
+            <small>Current Bid: ${{ listing.currentBid }}</small>
+            <br>
+            <div class="ListingDescriptions">
+                <h3>Description</h3>
+                <br>
+                <p>
+                    {{ listing.listingDescription }}
+                </p>
+                {% if user.is_authenticated %}
+                    <form>
+                        {% if not listing in request.user.watchlist.all %}
+                            <input type="button"class="btn btn-primary" value="Add to Watchlist"onclick="changeButtonAPI('{{ listing.id }}', this)"/>
+                        {% else %}
+                            <input type="button"class="btn btn-primary" value="Remove from Watchlist"onclick="changeButtonAPI('{{ listing.id }}', this)"/>
+                        {% endif %}
+                    </form>
                 {% endif %}
-            </form>
+            </div>
+        </div>
+
+        <br>
+        <hr>
+        {% empty %}
+            {{ emptyMessage }}
+        {% endfor %}
+        {% if not empty %}
+        <div style="text-align: center">
+            End of list || <span style="cursor:pointer; color: blue"onclick="scrollToTop()">Go back to top</span>
+        </div>
         {% endif %}
     </div>
+    
 </div>
 
-<br>
-<hr>
-{% empty %}
-    {{ emptyMessage }}
-{% endfor %}
-{% if not empty %}
-<div style="text-align: center">
-    End of list || <span style="cursor:pointer; color: blue"onclick="scrollToTop()">Go back to top</span>
-</div>
-{% endif %}
-<script>
-    function scrollToTop()
-    {
-        document.body.scrollTop = 0; // For Safari
-        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
-    }
-    function changeButtonAPI(listingID, clickedButton)
-    {
-        
-        fetch('/watchlistAddRemove',
-        {
-            method: "PUT",
-            body: JSON.stringify
-            ({
-                operation: clickedButton.value,
-                listingID: listingID
-            })
-        })
-        .then(response => response.json())
-        .then(result => 
-        {
-            clickedButton.value = result.newButtonText;
-        });
-        
-    }
-</script>
+
+
+
+
 

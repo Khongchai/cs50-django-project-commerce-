@@ -28,6 +28,19 @@ class Listing(models.Model):
     def __str__(self):
         return f"ID: {self.id}\n Product: {self.listingItemName}\n Posted by: {self.owner} \n Price: {self.currentBid} \n Listing date: {self.listingDate} \n imgURL: {self.imgURL}\n Categories: {self.categories}"
 
+    def serialize(self):
+        return {
+            "owner": self.owner,
+            "currentHighestBidOwner": self.currentHighestBidOwner,
+            "listingItemName": self.listingItemName,
+            "active": self.active,
+            "currentBid": self.currentBid,
+            "listingDate": self.listingDate.strftime("%b %#d %Y, %#I:%M %p"),
+            "listingDescription": self.listingDescription,
+            "imgURL": self.imgURL,
+            "categories": [category.categoryName for category in self.categories.all()]
+        }
+
 class Comment(models.Model):
     content = models.TextField(default="Enter comment")
     commentedOn = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="comments")

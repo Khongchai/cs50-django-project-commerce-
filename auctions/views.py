@@ -7,13 +7,17 @@ from django.contrib.auth.decorators import login_required
 import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
+import time
 from .models import *
 
 
 def index(request):
+    #begin with only five posts
+    start = 0
+    end = 5
+    listings = (Listing.objects.all())[start:end]
     return render(request, "auctions/index.html", {
-        "objectForLoop": Listing.objects.all()
+        "objectForLoop": listings
     })
 
 
@@ -106,7 +110,6 @@ def watchlistAddRemove(request):
         return JsonResponse({
             "error": "PUT method required."
         }, status=400)
-    print(request.method)
     data = json.loads(request.body)    
     operation = data.get("operation")
     watchlistItemID = data.get("listingID")
@@ -121,15 +124,12 @@ def watchlistAddRemove(request):
         return JsonResponse({
             "newButtonText": "Remove from Watchlist"
         }, status=201)
-    elif requestedObject in currentUser.watchlist.all():
+    else:
         currentUser.watchlist.remove(Listing.objects.get(pk=watchlistItemID))
         currentUser.save()
         return JsonResponse({
             "newButtonText": "Add to Watchlist"
         }, status=201)
-    else:
-        return HttpResponse("Unknown Server error")
-
 
 def watchlist(request):
     #for showing watchlist
@@ -154,7 +154,9 @@ def categoryItems(request, categoryName):
     })
 
 def viewlistingAndUpdateInfo(request, listingID):
+
     listing = Listing.objects.get(pk=listingID)
+    print(listing)
     if request.method == "POST":
         newBid = request.POST["newBid"]
         newBidder = User.objects.get(pk=request.user.id)
@@ -191,6 +193,16 @@ def closeBid(request, listingID):
         #after having checked that last bid is valid, begin the process of closing off this bid
         return render(request, "auctions/listingInfo.html", {
         "listing": listing
+    })
+
+def loadListings(request):
+    start = int(request.GET.get("start"))
+    end = int(request.GET.get("end"))
+    listings = list((Listing.objects.values())[start:end])
+    #serialize object then return as json
+    print(listings)
+    return JsonResponse({
+        "listings": listings
     })
         
     

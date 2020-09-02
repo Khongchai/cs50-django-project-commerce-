@@ -1,9 +1,6 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>
-        Current Watchlist
-    </h2>
-    {% include "auctions/listingTemplate.html" with emptyMessage="No items in your watchlist; time to go shopping!" %}
+    {% include "auctions/listingTemplate.html" with emptyMessage="No items in your watchlist; time to go shopping!" header="Current Watchlist" %}
 
 {% endblock %}

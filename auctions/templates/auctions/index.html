@@ -1,7 +1,7 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active Listings</h2>
 
-    {% include "auctions/listingTemplate.html" with emptyMessage="There are currently no auctioned items" %}
+
+    {% include "auctions/listingTemplate.html" with emptyMessage="There are currently no auctioned items" header="All Listings"%}
 {% endblock %}

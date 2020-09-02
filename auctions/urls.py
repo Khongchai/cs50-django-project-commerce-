@@ -8,12 +8,11 @@ urlpatterns = [
     path("logout", views.logout_view, name="logout"),
     path("register", views.register, name="register"),
     path("createListing", views.createListing, name="createListing"),
-    path("watchlistadd/<int:watchlistItemID>", views.watchlistAdd, name="watchlistAdd"),
     path("watchlist", views.watchlist, name="watchlist"),
-    path("watchlistRemove/<int:watchlistItemID>", views.watchlistRemove, name="watchlistRemove"),
     path("categories", views.categories, name="categories"),
     path("categories/<str:categoryName>", views.categoryItems, name="categoryItems"),
     path("viewlistinginfo/<int:listingID>", views.viewlistingAndUpdateInfo, name="viewlistingAndUpdateInfo"),
-    path("closebid/<int:listingID>", views.closeBid, name="closeBid")
+    path("closebid/<int:listingID>", views.closeBid, name="closeBid"),
+    path("watchlistAddRemove", views.watchlistAddRemove, name="watchlistAddRemove")
 
 ]

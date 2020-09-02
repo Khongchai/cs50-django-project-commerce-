@@ -31,19 +31,13 @@
             {{ listing.listingDescription }}
         </p>
         {% if user.is_authenticated %}
-
-            {% if not listing in request.user.watchlist.all %}
-                <form action="{% url 'watchlistAdd' listing.id %}" method="POST" >
-                    {% csrf_token %}
-                    <input type="submit" value="Add to Watchlist" name="add" class="btn btn-primary">
-                </form>
-            {% else %}
-                <form action="{% url 'watchlistRemove' listing.id%}" method="POST" >
-                    {% csrf_token %}
-                    <input type="submit" value="Remove" name="add" class="btn btn-primary">
-                </form>
-            {% endif %}
-
+            <form>
+                {% if not listing in request.user.watchlist.all %}
+                    <input type="button"class="btn btn-primary" value="Add to Watchlist"onclick="changeButtonAPI('{{ listing.id }}', this)"/>
+                {% else %}
+                    <input type="button"class="btn btn-primary" value="Remove from Watchlist"onclick="changeButtonAPI('{{ listing.id }}', this)"/>
+                {% endif %}
+            </form>
         {% endif %}
     </div>
 </div>
@@ -53,4 +47,25 @@
 {% empty %}
     {{ emptyMessage }}
 {% endfor %}
+<script>
+    function changeButtonAPI(listingID, clickedButton)
+    {
+        
+        fetch('/watchlistAddRemove',
+        {
+            method: "PUT",
+            body: JSON.stringify
+            ({
+                operation: clickedButton.value,
+                listingID: listingID
+            })
+        })
+        .then(response => response.json())
+        .then(result => 
+        {
+            clickedButton.value = result.newButtonText
+        });
+        
+    }
+</script>
 

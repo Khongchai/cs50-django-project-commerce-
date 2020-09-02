@@ -3,6 +3,10 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+import json
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import *
 
@@ -95,24 +99,37 @@ def createListing(request):
         return HttpResponseRedirect(reverse("index"))
 
 
-def watchlistAdd(request, watchlistItemID):
-    if request.method == "POST":
-        if not request.user.is_authenticated:
-            return HttpResponseRedirect(reverse("index"))
-        currentUser = User.objects.get(pk=request.user.id)     
+@login_required
+@csrf_exempt
+def watchlistAddRemove(request):
+    if request.method != "PUT":
+        return JsonResponse({
+            "error": "PUT method required."
+        }, status=400)
+    print(request.method)
+    data = json.loads(request.body)    
+    operation = data.get("operation")
+    watchlistItemID = data.get("listingID")
+    requestedObject = Listing.objects.get(pk=watchlistItemID)
+    currentUser = User.objects.get(pk=request.user.id) 
+
+    #change text from server is actually good, cus it ensures that
+    #button text is changed as a respond to the success of data manipulation
+    if requestedObject not in currentUser.watchlist.all():
         currentUser.watchlist.add(Listing.objects.get(pk=watchlistItemID))
-
-        return HttpResponseRedirect(reverse("watchlist"))
-    else:
-        return HttpResponseRedirect(reverse("index"))
-
-def watchlistRemove(request, watchlistItemID):
-    if request.method == "POST":
-        currentUser = User.objects.get(pk=request.user.id)
+        currentUser.save()
+        return JsonResponse({
+            "newButtonText": "Remove from Watchlist"
+        }, status=201)
+    elif requestedObject in currentUser.watchlist.all():
         currentUser.watchlist.remove(Listing.objects.get(pk=watchlistItemID))
-        return HttpResponseRedirect(reverse("watchlist"))
+        currentUser.save()
+        return JsonResponse({
+            "newButtonText": "Add to Watchlist"
+        }, status=201)
     else:
-        return HttpResponseRedirect(reverse("index"))
+        return HttpResponse("Unknown Server error")
+
 
 def watchlist(request):
     #for showing watchlist

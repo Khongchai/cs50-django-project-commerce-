@@ -6,7 +6,7 @@
 </div>
 
 <div style="text-align: center">
-    <div style="width: 80%; margin: 0 auto">
+    <div style="width: 80%; margin: 0 auto" id="postsContainer">
         {% for listing in objectForLoop %}
         <div>
             <a href="{% url 'viewlistingAndUpdateInfo' listing.id %}">
@@ -55,13 +55,119 @@
         {% empty %}
             {{ emptyMessage }}
         {% endfor %}
+        <div id="asyncPostsLoadReact">
+
+        </div>
+
         {% if not empty %}
         <div style="text-align: center">
             End of list || <span style="cursor:pointer; color: blue"onclick="scrollToTop()">Go back to top</span>
         </div>
         {% endif %}
     </div>
-    
+
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script type="text/babel">
+        var  loadMoreListingsIsRunning = false;
+
+        window.onscroll = () =>
+        {
+            if (window.innerWidth + window.scrollY >= document.body.offsetHeight)
+            {
+                if(!loadMoreListingsIsRunning)
+                {
+                    window.Concat.loadMoreListings();
+                }
+                
+            }
+        }
+        function scrollToTop()
+        {
+            document.body.scrollTop = 0; // For Safari
+            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+        }
+
+        function changeButtonAPI(listingID, clickedButton)
+        {
+            
+            fetch('/watchlistAddRemove',
+            {
+                method: "PUT",
+                body: JSON.stringify
+                ({
+                    operation: clickedButton.value,
+                    listingID: listingID
+                })
+            })
+            .then(response => response.json())
+            .then(result => 
+            {
+                clickedButton.value = result.newButtonText;
+            });
+            
+        }
+        //this class takes carre of concatenating the post
+        class Concat extends React.Component 
+        {
+            constructor(props)
+            {
+                super(props);
+                //bind this to window
+                window.Concat = this;
+                this.state = {
+                    //continue counting from 5 where 4 is the last post in index by default
+                    counter: 5,
+                    //how much should be loaded each time
+                    quantity: 5,
+                    posts: []
+                }
+            }
+            render() 
+            {
+                return (
+                    <div>
+                        {this.state.posts.map((post, i) => 
+                                <div key={i}>
+                                    {post}
+                                </div> 
+                            )
+                        }
+                    </div>
+                );
+            }
+
+            loadMoreListings = () => {
+                
+                loadMoreListingsIsRunning = true;
+                const start = this.state.counter - 1;
+                const end = start + this.state.quantity;
+                this.setState({counter: end + 1});
+                fetch(`/loadListings?start=${start}&end=${end}`)
+                .then(response => response.json())
+                .then(result => {
+                    result.listings.forEach((listing)=>
+                    {
+                        console.log(listing);
+                        //add info to this.state.posts with setState
+                    })
+
+                    setTimeout(()=>{
+                        loadMoreListingsIsRunning = false;
+                    }, 3000);
+                });
+                
+            }
+            
+        }
+
+        ReactDOM.render(
+            <Concat />,
+            document.getElementById('asyncPostsLoadReact')
+        );
+            
+    </script>
 </div>
 
 

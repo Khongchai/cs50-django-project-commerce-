@@ -198,9 +198,9 @@ def closeBid(request, listingID):
 def loadListings(request):
     start = int(request.GET.get("start"))
     end = int(request.GET.get("end"))
+    #turns QuerySet into list then return as json
     listings = list((Listing.objects.values())[start:end])
-    #serialize object then return as json
-    print(listings)
+
     return JsonResponse({
         "listings": listings
     })

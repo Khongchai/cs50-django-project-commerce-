@@ -55,7 +55,7 @@
         {% empty %}
             {{ emptyMessage }}
         {% endfor %}
-        <div id="asyncPostsLoadReact">
+        <div id="root">
 
         </div>
 
@@ -121,6 +121,7 @@
                     counter: 5,
                     //how much should be loaded each time
                     quantity: 5,
+                    newPostIndex: 0,
                     posts: []
                 }
             }
@@ -128,12 +129,10 @@
             {
                 return (
                     <div>
-                        {this.state.posts.map((post, i) => 
-                                <div key={i}>
-                                    {post}
-                                </div> 
-                            )
-                        }
+                        {this.state.posts.map(post => {
+                            //render out the entire page somehow
+
+                        })}
                     </div>
                 );
             }
@@ -149,13 +148,16 @@
                 .then(result => {
                     result.listings.forEach((listing)=>
                     {
-                        console.log(listing);
-                        //add info to this.state.posts with setState
+                        this.setState(state => ({
+                            posts: [...state.posts, listing]
+                        }));  
                     })
 
                     setTimeout(()=>{
                         loadMoreListingsIsRunning = false;
-                    }, 3000);
+                        //console log value for reference
+                        console.log(this.state.posts);
+                    }, 1000);
                 });
                 
             }
@@ -164,7 +166,7 @@
 
         ReactDOM.render(
             <Concat />,
-            document.getElementById('asyncPostsLoadReact')
+            document.getElementById('root')
         );
             
     </script>

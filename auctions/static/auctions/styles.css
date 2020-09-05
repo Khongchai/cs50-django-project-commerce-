@@ -51,3 +51,9 @@ select
 {
     margin-bottom: 30px;
 }
+
+.previewImages
+{
+    position: relative;
+    z-index: 2;
+}

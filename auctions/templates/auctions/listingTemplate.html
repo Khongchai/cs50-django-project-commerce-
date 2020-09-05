@@ -6,7 +6,7 @@
 </div>
 
 <div style="text-align: center">
-    <div style="width: 80%; margin: 0 auto" id="postsContainer">
+    <div style="width: 80%; margin: 0 auto" class="postsContainer">
         {% for listing in objectForLoop %}
         <div>
             <a href="{% url 'viewlistingAndUpdateInfo' listing.id %}">
@@ -55,7 +55,7 @@
         {% empty %}
             {{ emptyMessage }}
         {% endfor %}
-        <div id="root">
+        <div id="root" class="postsContainer">
 
         </div>
 
@@ -78,7 +78,7 @@
             {
                 if(!loadMoreListingsIsRunning)
                 {
-                    window.Concat.loadMoreListings();
+                    window.ConcatMain.loadMoreListings();
                 }
                 
             }
@@ -109,30 +109,27 @@
             
         }
         //this class takes carre of concatenating the post
-        class Concat extends React.Component 
+        class ConcatMain extends React.Component 
         {
             constructor(props)
             {
                 super(props);
                 //bind this to window
-                window.Concat = this;
+                window.ConcatMain = this;
                 this.state = {
                     //continue counting from 5 where 4 is the last post in index by default
                     counter: 5,
                     //how much should be loaded each time
                     quantity: 5,
                     newPostIndex: 0,
-                    posts: []
+                    listings: []
                 }
             }
             render() 
             {
                 return (
                     <div>
-                        {this.state.posts.map(post => {
-                            //render out the entire page somehow
-
-                        })}
+                        <Concat listings={this.state.listings} />
                     </div>
                 );
             }
@@ -143,29 +140,49 @@
                 const start = this.state.counter - 1;
                 const end = start + this.state.quantity;
                 this.setState({counter: end + 1});
+
                 fetch(`/loadListings?start=${start}&end=${end}`)
                 .then(response => response.json())
                 .then(result => {
                     result.listings.forEach((listing)=>
                     {
                         this.setState(state => ({
-                            posts: [...state.posts, listing]
+                            listings: [...state.listings, listing]
                         }));  
                     })
 
                     setTimeout(()=>{
                         loadMoreListingsIsRunning = false;
-                        //console log value for reference
-                        console.log(this.state.posts);
-                    }, 1000);
+                    }, 1500);
                 });
                 
             }
             
         }
 
+        class Concat extends React.Component
+        {
+            
+            render()
+            {
+                const listings = this.props.listings.map((listing, i) =>{
+                    return(
+                        <div key={i}>
+                            <img src={listing.imgURL} className="listingImages previewImages"/>
+                        </div>
+                    );
+                });
+
+                return(
+                    <div className="asyncLoaded">
+                        {listings}
+                    </div>
+                );
+            }
+        }
+
         ReactDOM.render(
-            <Concat />,
+            <ConcatMain />,
             document.getElementById('root')
         );
             
